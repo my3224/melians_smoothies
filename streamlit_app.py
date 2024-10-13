@@ -17,9 +17,20 @@ name_on_order = st.text_input('name on smoothie:')
 st.write('The name on your smoothie will be', name_on_order)
 
 
+# Access Snowflake connection via Streamlit secrets
+conn = st.secrets["connections"]["snowflake"]
 
-cnx=st.connection("snowflake")
-session =cnx.session()
+# Use snowflake.connector to connect
+connection = snowflake.connector.connect(
+    account=conn["account"],
+    user=conn["user"],
+    password=conn["password"],
+    warehouse=conn["warehouse"],
+    database=conn["database"],
+    schema=conn["schema"],
+    role=conn["role"]
+)
+
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'))
 #st.dataframe(data=my_dataframe, use_container_width=True)
 
